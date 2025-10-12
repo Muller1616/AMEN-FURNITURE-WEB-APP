@@ -31,7 +31,7 @@ The goal is to deliver a fast, user-friendly, and responsive web application for
 | **Styling** | Tailwind CSS |
 | **Icons** | Lucide React / Heroicons |
 | **Version Control** | Git & GitHub |
-| **Deployment** | Vercel |
+| **Modules**  | Typescript |
 
 ---
 
