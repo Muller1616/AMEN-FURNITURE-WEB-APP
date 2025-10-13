@@ -56,37 +56,51 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4">
-      {/* Background Image */}
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      {/* Stunning Background Image */}
       <div className="absolute inset-0 z-0">
-        <img src="/cozy-living-room-with-modern-furniture-and-warm-li.jpg" alt="User Background" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <img 
+          src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2558&auto=format&fit=crop" 
+          alt="Elegant Living Room" 
+          className="w-full h-full object-cover" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/60 to-black/75" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md">
-        <Button variant="ghost" className="mb-4 text-white hover:text-white/80" onClick={onBack}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
+        <Button 
+          variant="ghost" 
+          className="mb-6 text-white hover:text-amber-400 hover:bg-white/10 backdrop-blur-sm border border-white/20 transition-all duration-300" 
+          onClick={onBack}
+        >
+          <ArrowLeft className="mr-2 h-5 w-5" />
           Back to Role Selection
         </Button>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Welcome Back</CardTitle>
-            <CardDescription>Sign in to your account or create a new one</CardDescription>
+        <Card className="border-2 border-white/20 bg-white/95 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</CardTitle>
+            <CardDescription className="text-base text-gray-600">
+              Sign in to your account or create a new one
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "login" | "signup")}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100">
+                <TabsTrigger value="login" className="text-base font-semibold data-[state=active]:bg-amber-500 data-[state=active]:text-white">
+                  Login
+                </TabsTrigger>
+                <TabsTrigger value="signup" className="text-base font-semibold data-[state=active]:bg-amber-500 data-[state=active]:text-white">
+                  Sign Up
+                </TabsTrigger>
               </TabsList>
 
               {/* Login Tab */}
               <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-5">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
+                    <Label htmlFor="login-email" className="text-base font-semibold text-gray-700">Email</Label>
                     <Input
                       id="login-email"
                       type="email"
@@ -95,11 +109,12 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
                       onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                       required
                       disabled={isLoading}
+                      className="h-12 text-base border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
+                    <Label htmlFor="login-password" className="text-base font-semibold text-gray-700">Password</Label>
                     <Input
                       id="login-password"
                       type="password"
@@ -108,20 +123,25 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
                       onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                       required
                       disabled={isLoading}
+                      className="h-12 text-base border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                     />
                   </div>
 
                   {error && (
                     <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>{error}</AlertDescription>
+                      <AlertCircle className="h-5 w-5" />
+                      <AlertDescription className="text-sm">{error}</AlertDescription>
                     </Alert>
                   )}
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 text-base font-semibold bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-lg" 
+                    disabled={isLoading}
+                  >
                     {isLoading ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                         Signing in...
                       </>
                     ) : (
@@ -133,10 +153,10 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
 
               {/* Signup Tab */}
               <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="space-y-4">
+                <form onSubmit={handleSignup} className="space-y-5">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName">First Name</Label>
+                      <Label htmlFor="firstName" className="text-base font-semibold text-gray-700">First Name</Label>
                       <Input
                         id="firstName"
                         type="text"
@@ -145,11 +165,12 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
                         onChange={(e) => setSignupData({ ...signupData, firstName: e.target.value })}
                         required
                         disabled={isLoading}
+                        className="h-12 text-base border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">Last Name</Label>
+                      <Label htmlFor="lastName" className="text-base font-semibold text-gray-700">Last Name</Label>
                       <Input
                         id="lastName"
                         type="text"
@@ -158,12 +179,13 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
                         onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })}
                         required
                         disabled={isLoading}
+                        className="h-12 text-base border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email" className="text-base font-semibold text-gray-700">Email</Label>
                     <Input
                       id="signup-email"
                       type="email"
@@ -172,11 +194,12 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
                       onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                       required
                       disabled={isLoading}
+                      className="h-12 text-base border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password" className="text-base font-semibold text-gray-700">Password</Label>
                     <Input
                       id="signup-password"
                       type="password"
@@ -185,11 +208,12 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
                       onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                       required
                       disabled={isLoading}
+                      className="h-12 text-base border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Label htmlFor="confirm-password" className="text-base font-semibold text-gray-700">Confirm Password</Label>
                     <Input
                       id="confirm-password"
                       type="password"
@@ -198,27 +222,32 @@ export default function UserAuthForm({ onBack }: UserAuthFormProps) {
                       onChange={(e) => setSignupData({ ...signupData, confirmPassword: e.target.value })}
                       required
                       disabled={isLoading}
+                      className="h-12 text-base border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                     />
                   </div>
 
                   {signupData.password !== signupData.confirmPassword && signupData.confirmPassword && (
                     <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>Passwords do not match</AlertDescription>
+                      <AlertCircle className="h-5 w-5" />
+                      <AlertDescription className="text-sm">Passwords do not match</AlertDescription>
                     </Alert>
                   )}
 
                   {error && (
                     <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>{error}</AlertDescription>
+                      <AlertCircle className="h-5 w-5" />
+                      <AlertDescription className="text-sm">{error}</AlertDescription>
                     </Alert>
                   )}
 
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 text-base font-semibold bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-lg" 
+                    disabled={isLoading}
+                  >
                     {isLoading ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                         Creating account...
                       </>
                     ) : (
