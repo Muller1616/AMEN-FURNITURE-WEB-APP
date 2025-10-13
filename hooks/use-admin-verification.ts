@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { authApi } from "../lib/api/auth"
+import { authApi } from "@/lib/api/auth"
 
 interface VerificationResult {
   success: boolean
@@ -47,3 +47,5 @@ export function useAdminVerification() {
     success,
   }
 }
+
+export default useAdminVerification

@@ -3,17 +3,16 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import AdminVerification from "./admin-verification"
+import AdminVerification from "./admin-verification"
 import UserAuthForm from "./user-auth-form"
 import { User, Shield } from "lucide-react"
 
 export default function RoleSelection() {
   const [selectedRole, setSelectedRole] = useState<"user" | "admin" | null>(null)
 
-  // Temporarily disabled - AdminVerification has an import issue
-  // if (selectedRole === "admin") {
-  //   return <AdminVerification onBack={() => setSelectedRole(null)} />
-  // }
+  if (selectedRole === "admin") {
+    return <AdminVerification onBack={() => setSelectedRole(null)} />
+  }
 
   if (selectedRole === "user") {
     return <UserAuthForm onBack={() => setSelectedRole(null)} />
