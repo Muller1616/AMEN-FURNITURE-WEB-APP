@@ -28,29 +28,39 @@ function AdminVerification({ onBack }: AdminVerificationProps) {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4">
-      {/* Background Image */}
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      {/* Professional Office Background */}
       <div className="absolute inset-0 z-0">
-        <img src="/elegant-office-furniture-and-workspace.jpg" alt="Admin Background" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <img 
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2669&auto=format&fit=crop" 
+          alt="Modern Office Space" 
+          className="w-full h-full object-cover" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-blue-900/75 to-slate-900/85" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md">
-        <Button variant="ghost" className="mb-4 text-white hover:text-white/80" onClick={onBack}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
+        <Button 
+          variant="ghost" 
+          className="mb-6 text-white hover:text-blue-400 hover:bg-white/10 backdrop-blur-sm border border-white/20 transition-all duration-300" 
+          onClick={onBack}
+        >
+          <ArrowLeft className="mr-2 h-5 w-5" />
           Back to Role Selection
         </Button>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Admin Verification</CardTitle>
-            <CardDescription>Enter your admin email to verify access</CardDescription>
+        <Card className="border-2 border-white/20 bg-white/95 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-3xl font-bold text-gray-900 mb-2">Admin Verification</CardTitle>
+            <CardDescription className="text-base text-gray-600">
+              Enter your admin email to verify access
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email" className="text-base font-semibold text-gray-700">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
@@ -59,27 +69,34 @@ function AdminVerification({ onBack }: AdminVerificationProps) {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
+                  className="h-12 text-base border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               {error && (
                 <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertCircle className="h-5 w-5" />
+                  <AlertDescription className="text-sm">{error}</AlertDescription>
                 </Alert>
               )}
 
               {success && (
-                <Alert className="border-green-500 text-green-700">
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertDescription>Verification successful! Redirecting to admin dashboard...</AlertDescription>
+                <Alert className="border-green-500 bg-green-50">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <AlertDescription className="text-sm text-green-800">
+                    Verification successful! Redirecting to admin dashboard...
+                  </AlertDescription>
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg" 
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Verifying...
                   </>
                 ) : (
