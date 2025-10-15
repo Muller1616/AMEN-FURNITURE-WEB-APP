@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@/components/contexts/auth-context"
+import { useAuth } from "@/contexts/auth-context"
 import RoleSelection from "@/components/auth/role-selection"
 import Header from "@/components/header/Header"
 import Hero from "@/components/hero/Hero"
