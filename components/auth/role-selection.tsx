@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import AdminVerification from "./admin-verification"
 import UserAuthForm from "./user-auth-form"
 import { User, Shield, Sparkles, ArrowRight } from "lucide-react"
 
@@ -28,7 +27,7 @@ export default function RoleSelection() {
   }
 
   if (selectedRole === "user") {
-    return <UserAuthForm onBack={() => setSelectedRole(null)} />
+    return <UserAuthForm onClose={() => setSelectedRole(null)} />
   }
 
   return (
@@ -44,6 +43,14 @@ export default function RoleSelection() {
           className="w-full h-full object-cover scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-transparent" />
+      </div>
+
+      {/* Brand Logo - Top Left */}
+      <div className={`fixed top-6 left-6 z-50 transition-all duration-1000 ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
+        <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/30 rounded-2xl px-6 py-3 shadow-2xl hover:bg-white/20 transition-all duration-300">
+          <Sparkles className="w-7 h-7 text-amber-400 animate-pulse" />
+          <span className="text-white font-black text-2xl tracking-tight">AMEN FURNITURE</span>
+        </div>
       </div>
 
       {/* Floating Role Selection Buttons - Top Right */}
@@ -146,18 +153,6 @@ export default function RoleSelection() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div 
-        className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40 transition-all duration-1000 delay-1500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
-      >
-        <div className="flex flex-col items-center gap-2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full p-1">
-            <div className="w-1 h-3 bg-white/70 rounded-full mx-auto animate-scroll"></div>
-          </div>
-          <span className="text-white/60 text-xs">Scroll to explore</span>
-        </div>
-      </div>
-
       <style jsx>{`
         @keyframes gradient {
           0%, 100% { background-position: 0% 50%; }
@@ -165,13 +160,6 @@ export default function RoleSelection() {
         }
         .animate-gradient {
           animation: gradient 3s ease infinite;
-        }
-        @keyframes scroll {
-          0% { transform: translateY(0); opacity: 1; }
-          100% { transform: translateY(12px); opacity: 0; }
-        }
-        .animate-scroll {
-          animation: scroll 1.5s ease-in-out infinite;
         }
         .animation-delay-200 {
           animation-delay: 200ms;
