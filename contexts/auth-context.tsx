@@ -9,7 +9,6 @@ interface User {
   firstName: string
   lastName: string
   username: string
-  role: "user" | "admin"
 }
 
 interface AuthContextType {
@@ -18,7 +17,7 @@ interface AuthContextType {
   error: string | null
   login: (email: string, password: string) => Promise<void>
   signup: (data: SignupData) => Promise<void>
-  logout: () => Promise<void>
+  logout: () => void
   clearError: () => void
 }
 
@@ -49,15 +48,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const checkAuth = async () => {
       try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem("auth_token") : null
-        if (token) {
-          const userData = await authApi.getCurrentUser()
-          setUser(userData)
+        const token = typeof window !== 'undefined' ? localStorage.getItem("access_token") : null
+        const storedUser = typeof window !== 'undefined' ? localStorage.getItem("user") : null
+        
+        if (token && storedUser) {
+          // Try to use stored user data first
+          setUser(JSON.parse(storedUser))
+          
+          // Optionally verify token is still valid
+          try {
+            const userData = await authApi.getCurrentUser()
+            const formattedUser = {
+              id: userData.id,
+              email: userData.email,
+              firstName: userData.first_name,
+              lastName: userData.last_name,
+              username: userData.username,
+            }
+            setUser(formattedUser)
+            if (typeof window !== 'undefined') {
+              localStorage.setItem("user", JSON.stringify(formattedUser))
+            }
+          } catch {
+            // Token invalid, clear storage
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem("access_token")
+              localStorage.removeItem("refresh_token")
+              localStorage.removeItem("user")
+            }
+            setUser(null)
+          }
         }
       } catch (err) {
         if (typeof window !== 'undefined') {
-          localStorage.removeItem("auth_token")
+          localStorage.removeItem("access_token")
+          localStorage.removeItem("refresh_token")
+          localStorage.removeItem("user")
         }
+        setUser(null)
       }
     }
     checkAuth()
@@ -69,19 +97,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const response = await authApi.login(email, password)
+      
+      // Store tokens
       if (typeof window !== 'undefined') {
-        localStorage.setItem("auth_token", response.token)
+        localStorage.setItem("access_token", response.access)
+        localStorage.setItem("refresh_token", response.refresh)
       }
-      setUser(response.user)
 
-      // Redirect to appropriate page based on role
-      if (response.user.role === "admin") {
-        window.location.href = "/admin"
-      } else {
-        window.location.href = "/products"
+      // Format user data to camelCase
+      const formattedUser = {
+        id: response.user.id,
+        email: response.user.email,
+        firstName: response.user.first_name,
+        lastName: response.user.last_name,
+        username: response.user.username,
       }
+
+      setUser(formattedUser)
+      
+      // Store user data
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("user", JSON.stringify(formattedUser))
+      }
+
+      // No automatic redirect - let the component handle it
     } catch (err: any) {
       setError(err.message || "Login failed. Please check your credentials.")
+      throw err // Re-throw so calling component knows it failed
     } finally {
       setIsLoading(false)
     }
@@ -93,34 +135,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const response = await authApi.signup(data)
+      
+      // Store tokens
       if (typeof window !== 'undefined') {
-        localStorage.setItem("auth_token", response.token)
+        localStorage.setItem("access_token", response.access)
+        localStorage.setItem("refresh_token", response.refresh)
       }
-      setUser(response.user)
 
-      // Redirect to products page after signup
-      window.location.href = "/products"
+      // Format user data to camelCase
+      const formattedUser = {
+        id: response.user.id,
+        email: response.user.email,
+        firstName: response.user.first_name,
+        lastName: response.user.last_name,
+        username: response.user.username,
+      }
+
+      setUser(formattedUser)
+      
+      // Store user data
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("user", JSON.stringify(formattedUser))
+      }
+
+      // No automatic redirect - let the component handle it
     } catch (err: any) {
       setError(err.message || "Signup failed. Please try again.")
+      throw err // Re-throw so calling component knows it failed
     } finally {
       setIsLoading(false)
     }
   }
 
-  const logout = async () => {
-    setIsLoading(true)
-
-    try {
-      await authApi.logout()
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem("auth_token")
-      }
-      setUser(null)
+  const logout = () => {
+    authApi.logout() // This clears localStorage
+    setUser(null)
+    setError(null)
+    
+    // Redirect to home
+    if (typeof window !== 'undefined') {
       window.location.href = "/"
-    } catch (err: any) {
-      setError(err.message || "Logout failed.")
-    } finally {
-      setIsLoading(false)
     }
   }
 
