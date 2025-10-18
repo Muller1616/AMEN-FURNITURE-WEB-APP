@@ -1,16 +1,16 @@
 // lib/api/auth.ts
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://your-deployed-backend.onrender.com/api"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://amen-k4ut.onrender.com"
 
 interface LoginResponse {
-  token: string
+  access: string
+  refresh: string
   user: {
     id: string
     email: string
-    firstName: string
-    lastName: string
+    first_name: string
+    last_name: string
     username: string
-    role: "user" | "admin"
   }
 }
 
@@ -22,16 +22,23 @@ interface SignupData {
   lastName: string
 }
 
-interface AdminVerificationResponse {
-  verified: boolean
-  adminUrl: string
+interface SignupResponse {
+  access: string
+  refresh: string
+  user: {
+    id: string
+    email: string
+    first_name: string
+    last_name: string
+    username: string
+  }
 }
 
 async function handleResponse(response: Response) {
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data.message || data.error || "An error occurred")
+    throw new Error(data.message || data.error || data.detail || "An error occurred")
   }
 
   return data
@@ -40,7 +47,7 @@ async function handleResponse(response: Response) {
 export const authApi = {
   // User login
   login: async (email: string, password: string): Promise<LoginResponse> => {
-    const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,8 +59,8 @@ export const authApi = {
   },
 
   // User signup
-  signup: async (data: SignupData): Promise<LoginResponse> => {
-    const response = await fetch(`${API_BASE_URL}//api/auth/register`, {
+  signup: async (data: SignupData): Promise<SignupResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/register/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,43 +77,44 @@ export const authApi = {
     return handleResponse(response)
   },
 
-  // Admin verification
-  verifyAdmin: async (email: string): Promise<AdminVerificationResponse> => {
-    const response = await fetch(`${API_BASE_URL}/auth/verify-admin/`, {
+  // Get current user
+  getCurrentUser: async () => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem("access_token") : null
+
+    if (!token) {
+      throw new Error("No access token found")
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/me/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return handleResponse(response)
+  },
+
+  // Refresh token
+  refreshToken: async (refreshToken: string) => {
+    const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({
+        refresh: refreshToken,
+      }),
     })
 
     return handleResponse(response)
   },
 
-  // Get current user
-  getCurrentUser: async () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem("auth_token") : null
-
-    const response = await fetch(`${API_BASE_URL}/auth/me/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-
-    return handleResponse(response)
-  },
-
-  // Logout
-  logout: async () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem("auth_token") : null
-
-    const response = await fetch(`${API_BASE_URL}/auth/logout/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-
-    return handleResponse(response)
+  // Logout (client-side only - clear tokens)
+  logout: () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("access_token")
+      localStorage.removeItem("refresh_token")
+      localStorage.removeItem("user")
+    }
   },
 }
