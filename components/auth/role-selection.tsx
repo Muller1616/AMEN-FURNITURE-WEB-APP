@@ -21,9 +21,9 @@ export default function RoleSelection() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Handle admin redirect
+  // Handle admin redirect - FIXED
   const handleAdminClick = () => {
-    window.location.href = "https://your-deployed-backend.onrender.com/admin/"
+    window.location.href = "https://amen-k4ut.onrender.com/admin/"
   }
 
   if (selectedRole === "user") {
